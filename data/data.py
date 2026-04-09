@@ -30,11 +30,9 @@ returns = df[df['is_return']].copy()
 
 # --- DATA AGGREGATION ---
 
-# --- Recency ---
-last_purchase = (purchases.groupby('CustomerID')['InvoiceDate']
-                 .max()
-                 .rename('Last_Purchase_Date'))
-recency = ((global_last_date - last_purchase).dt.days).rename('Recency')
+# # --- Recency ---
+last_purchase = (purchases.groupby('CustomerID')['InvoiceDate'].max().rename('Last_Purchase_Date'))
+# recency = ((global_last_date - last_purchase).dt.days).rename('Recency')
 
 # --- Frequency ---
 frequency = (purchases.groupby('CustomerID')['Invoice']
@@ -93,7 +91,7 @@ country_uk = (purchases.groupby('CustomerID')["Country"]
 
 # --- CONCAT IN A SINGLE DATAFRAME ---
 cs = pd.concat([
-    recency, frequency, monetary, log_monetary,
+    frequency, monetary, log_monetary,
     cancel_rate, stock_div, return_prop, 
     avg_time, country_uk, last_purchase], axis = 1).reset_index()
 
@@ -121,7 +119,7 @@ cs = cs[cs['CustomerID'].isin(valid_customer)]
 cs.to_excel('cleaned_data.xlsx', index = False)
 
 # --- OUTPUT NUMPY ARRAY ---
-FEATURE_COLS = ["Recency", "Frequency", "Log_monetary_Value",
+FEATURE_COLS = ["Frequency", "Log_monetary_Value",
     "Cancellation_Rate", "StockCode_Diversity", "Return_Propensity",
     "Avg_Time_Between_Purch", "Country_UK"]
 
