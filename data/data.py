@@ -115,6 +115,11 @@ print(f"Churn cutoff: {churn_cutoff}")
 
 cs['Churn'] = (cs['Last_Purchase_Date'] < churn_cutoff).astype(int)
 
+valid_customer = purchases['CustomerID'].unique()
+cs = cs[cs['CustomerID'].isin(valid_customer)]
+
+cs.to_excel('cleaned_data.xlsx', index = False)
+
 # --- OUTPUT NUMPY ARRAY ---
 FEATURE_COLS = ["Recency", "Frequency", "Log_monetary_Value",
     "Cancellation_Rate", "StockCode_Diversity", "Return_Propensity",
