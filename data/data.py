@@ -32,7 +32,7 @@ returns = df[df['is_return']].copy()
 
 # # --- Recency ---
 last_purchase = (purchases.groupby('CustomerID')['InvoiceDate'].max().rename('Last_Purchase_Date'))
-# recency = ((global_last_date - last_purchase).dt.days).rename('Recency')
+recency = ((global_last_date - last_purchase).dt.days).rename('Recency')
 
 # --- Frequency ---
 frequency = (purchases.groupby('CustomerID')['Invoice']
@@ -117,6 +117,11 @@ valid_customer = purchases['CustomerID'].unique()
 cs = cs[cs['CustomerID'].isin(valid_customer)]
 
 cs.to_excel('cleaned_data.xlsx', index = False)
+
+# --- CORRELATION CHECK ---
+temp_check = pd.concat([recency, (last_purchase <churn_cutoff).astype(int).rename('Churn')], axis = 1)
+correlation = temp_check['Recency'].corr(temp_check['Churn'])
+print(f"Pearson's Correlation: {correlation}")
 
 # --- OUTPUT NUMPY ARRAY ---
 FEATURE_COLS = ["Frequency", "Log_monetary_Value",
